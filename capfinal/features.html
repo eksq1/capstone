@@ -1,0 +1,438 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tupick 기능 소개 - 조각투자 AI 분석 플랫폼</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* 기본 스타일 초기화 */
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+        
+        body {
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+            line-height: 1.6;
+            color: #1F2937;
+            background: #F8FAFC;
+            overflow-x: hidden;
+        }
+        
+        /* 네비게이션 스타일 - index.html과 동일 */
+        .navbar {
+            background: white;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        .nav-logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #3B82F6;
+            margin: 0;
+            line-height: 1.2;
+        }
+        
+        .logo-subtitle {
+            font-size: 0.875rem;
+            color: #6B7280;
+            margin: 0;
+            line-height: 1.2;
+            margin-top: 4px;
+        }
+        
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .nav-link {
+            text-decoration: none;
+            color: #6B7280;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #3B82F6;
+        }
+        
+        .nav-button {
+            background: #3B82F6;
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.3s ease;
+        }
+        
+        .nav-button:hover {
+            background: #2563EB;
+        }
+
+        /* 기능 페이지 스타일 */
+        .features-section {
+            margin-top: 100px;
+            padding: 4rem 2rem;
+        }
+
+        .features-container {
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+
+        .section-title {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: #1F2937;
+            text-align: center;
+            margin-bottom: 1rem;
+        }
+
+        .section-subtitle {
+            font-size: 1.2rem;
+            color: #6B7280;
+            text-align: center;
+            margin-bottom: 4rem;
+            line-height: 1.6;
+        }
+
+        /* 기능 카드 그리드 */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 2rem;
+            margin-bottom: 4rem;
+        }
+
+        .feature-card {
+            background: white;
+            border-radius: 16px;
+            padding: 2.5rem;
+            box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+            border: 1px solid #F3F4F6;
+        }
+
+        .feature-card:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 8px 30px rgba(0, 0, 0, 0.12);
+        }
+
+        .feature-icon {
+            width: 60px;
+            height: 60px;
+            background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-size: 1.5rem;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-card h3 {
+            font-size: 1.4rem;
+            font-weight: 700;
+            color: #1F2937;
+            margin-bottom: 1rem;
+        }
+
+        .feature-card p {
+            color: #6B7280;
+            line-height: 1.6;
+            margin-bottom: 1.5rem;
+        }
+
+        .feature-list {
+            list-style: none;
+            padding: 0;
+        }
+
+        .feature-list li {
+            padding: 0.5rem 0;
+            color: #6B7280;
+            position: relative;
+            padding-left: 1.5rem;
+        }
+
+        .feature-list li:before {
+            content: "✓";
+            position: absolute;
+            left: 0;
+            color: #10B981;
+            font-weight: bold;
+        }
+
+        /* 작동 방식 섹션 */
+        .how-it-works {
+            background: white;
+            border-radius: 20px;
+            padding: 3rem;
+            margin-top: 2rem;
+        }
+
+        .steps-container {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 2rem;
+            margin-top: 2rem;
+        }
+
+        .step {
+            text-align: center;
+            padding: 2rem;
+        }
+
+        .step-number {
+            width: 60px;
+            height: 60px;
+            background: #3B82F6;
+            color: white;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+            font-weight: 700;
+            margin: 0 auto 1.5rem;
+        }
+
+        .step h4 {
+            font-size: 1.2rem;
+            font-weight: 600;
+            color: #1F2937;
+            margin-bottom: 1rem;
+        }
+
+        .step p {
+            color: #6B7280;
+            line-height: 1.6;
+        }
+
+        /* CTA 섹션 */
+        .cta-section {
+            text-align: center;
+            padding: 4rem 2rem;
+            background: linear-gradient(135deg, #3B82F6, #8B5CF6);
+            color: white;
+            border-radius: 20px;
+            margin-top: 4rem;
+        }
+
+        .cta-section h2 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 1rem;
+        }
+
+        .cta-section p {
+            font-size: 1.2rem;
+            margin-bottom: 2rem;
+            opacity: 0.9;
+        }
+
+        .cta-button {
+            background: white;
+            color: #3B82F6;
+            padding: 1rem 2.5rem;
+            border-radius: 12px;
+            text-decoration: none;
+            font-weight: 600;
+            font-size: 1.1rem;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+
+        .cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 6px 20px rgba(255, 255, 255, 0.3);
+        }
+
+        /* 반응형 디자인 */
+        @media (max-width: 768px) {
+            .nav-menu {
+                gap: 1rem;
+            }
+            
+            .nav-link {
+                font-size: 0.9rem;
+            }
+            
+            .nav-button {
+                padding: 0.4rem 1rem;
+                font-size: 0.9rem;
+            }
+
+            .features-section {
+                padding: 2rem 1rem;
+                margin-top: 80px;
+            }
+
+            .section-title {
+                font-size: 2rem;
+            }
+
+            .features-grid {
+                grid-template-columns: 1fr;
+                gap: 1.5rem;
+            }
+
+            .feature-card {
+                padding: 2rem;
+            }
+
+            .steps-container {
+                grid-template-columns: 1fr;
+            }
+
+            .cta-section {
+                padding: 3rem 1.5rem;
+            }
+
+            .cta-section h2 {
+                font-size: 1.8rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 네비게이션 - index.html과 동일 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h1>Tupick</h1>
+                <span class="logo-subtitle">조각투자 AI 분석</span>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">홈</a>
+                <a href="features.html" class="nav-link">기능</a>
+                <a href="how-it-works.html" class="nav-link">작동방식</a>
+                <a href="about.html" class="nav-link">서비스 소개</a>
+                <a href="app.html" class="nav-button">시작하기</a>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 기능 소개 섹션 -->
+    <section class="features-section">
+        <div class="features-container">
+            <h1 class="section-title">Tupick의 강력한 기능</h1>
+            <p class="section-subtitle">
+                AI 기술로 복잡한 조각투자를 쉽고 명확하게 분석해드립니다<br>
+                다양한 플랫폼의 정보를 한 곳에서 모아 당신만의 맞춤형 리포트를 제공합니다
+            </p>
+
+            <!-- 주요 기능 그리드 -->
+            <div class="features-grid">
+                <div class="feature-card">
+                    <div class="feature-icon">🔍</div>
+                    <h3>스마트 데이터 수집</h3>
+                    <p>다양한 조각투자 플랫폼에서 실시간으로 정보를 수집합니다</p>
+                    <ul class="feature-list">
+                        <li>KASA, TESSA, 뮤직카우 등 주요 플랫폼 연동</li>
+                        <li>실시간 시장 데이터 업데이트</li>
+                        <li>정확한 투자 정보 제공</li>
+                        <li>자동화된 데이터 수집 시스템</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">🤖</div>
+                    <h3>AI 기반 분석</h3>
+                    <p>최신 AI 기술로 투자 정보를 심층 분석합니다</p>
+                    <ul class="feature-list">
+                        <li>자연어 처리(NLP) 기반 분석</li>
+                        <li>투자 위험도 평가</li>
+                        <li>수익률 예측 모델</li>
+                        <li>시장 트렌드 분석</li>
+                    </ul>
+                </div>
+
+                <div class="feature-card">
+                    <div class="feature-icon">📊</div>
+                    <h3>맞춤형 리포트</h3>
+                    <p>당신의 투자 성향에 딱 맞는 리포트를 생성합니다</p>
+                    <ul class="feature-list">
+                        <li>개인화된 투자 제안</li>
+                        <li>리스크 프로필 반영</li>
+                        <li>예산별 최적의 포트폴리오</li>
+                        <li>정기적인 리포트 업데이트</li>
+                    </ul>
+                </div>
+            </div>
+
+            <!-- 작동 방식 섹션 -->
+            <div class="how-it-works">
+                <h2 class="section-title">작동 방식</h2>
+                <p class="section-subtitle">3단계로 쉽고 빠르게 투자 인사이트를 얻어보세요</p>
+                
+                <div class="steps-container">
+                    <div class="step">
+                        <div class="step-number">1</div>
+                        <h4>정보 수집</h4>
+                        <p>공개된 조각투자 플랫폼에서 데이터를 자동으로 수집합니다</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">2</div>
+                        <h4>AI 분석</h4>
+                        <p>수집된 데이터를 AI가 분석하고 구조화합니다</p>
+                    </div>
+                    <div class="step">
+                        <div class="step-number">3</div>
+                        <h4>맞춤 리포트</h4>
+                        <p>사용자 프로필에 맞는 투자 리포트를 제공합니다</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- CTA 섹션 -->
+            <div class="cta-section">
+                <h2>지금 바로 Tupick을 시작해보세요</h2>
+                <p>복잡한 조각투자, AI가 쉽게 분석해드립니다</p>
+                <a href="index.html" class="cta-button">무료로 시작하기</a>
+            </div>
+        </div>
+    </section>
+
+    <script>
+        // 네비게이션 스크롤 효과
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (window.scrollY > 100) {
+                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+                navbar.style.backdropFilter = 'blur(10px)';
+            } else {
+                navbar.style.background = 'white';
+                navbar.style.backdropFilter = 'none';
+            }
+        });
+    </script>
+</body>
+</html>

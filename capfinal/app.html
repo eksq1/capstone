@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tupick AI 분석 - 앱</title>
+    <link rel="stylesheet" href="/static/css/main.css">
+    <link rel="stylesheet" href="/static/css/app.css">
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
+</head>
+<body>
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <a href="/" style="text-decoration: none; color: inherit;">
+                    <h1>Tupick</h1>
+                    <span class="logo-subtitle">조각투자 AI 분석</span>
+                </a>
+            </div>
+            <div class="nav-menu">
+                <a href="/" class="nav-link">홈</a>
+                <a href="/about" class="nav-link">소개</a>
+                <a href="/docs" target="_blank" class="nav-link">API 문서</a>
+            </div>
+        </div>
+    </nav>
+
+    <main class="app-container">
+        <h1>AI 조각투자 분석</h1>
+        <p>URL을 입력하고 AI 분석 리포트를 받아보세요</p>
+        
+        <!-- 기존 기능 구현 -->
+        <div class="app-content">
+            <div class="app-grid">
+                <!-- 데이터 수집 섹션 -->
+                <section class="app-card">
+                    <h2>데이터 수집 · 인덱싱</h2>
+                    <div class="input-group">
+                        <label>URLs <span class="input-hint">(줄바꿈으로 여러 개)</span></label>
+                        <textarea id="urlInput" class="form-textarea" placeholder="https://www.kasa.co.kr/faq&#10;https://tessa.art/faq"></textarea>
+                        <div class="preset-buttons-container">
+                            <button class="preset-button" onclick="fillPreset('kasa')">KASA 예시</button>
+                            <button class="preset-button" onclick="fillPreset('tessa')">TESSA 예시</button>
+                        </div>
+                    </div>
+                    <div class="form-columns">
+                        <div class="input-group">
+                            <label>소스 식별자</label>
+                            <input id="sourceInput" class="form-input" value="kasa" />
+                        </div>
+                        <div class="input-group">
+                            <label class="checkbox-container">
+                                <input id="jsRenderCheckbox" type="checkbox" checked />
+                                JS 렌더링
+                            </label>
+                        </div>
+                    </div>
+                    <button id="ingestButton" class="primary-action-button" onclick="ingestUrls()">
+                        <span id="ingestSpinner" class="loading-spinner is-hidden"></span>
+                        수집→인덱싱 실행
+                    </button>
+                    <p id="ingestMessage" class="card-subtitle"></p>
+                </section>
+
+                <!-- 질의 섹션 -->
+                <section class="app-card">
+                    <h2>질의 · 리포트 생성</h2>
+                    <div class="input-group">
+                        <label>질문</label>
+                        <textarea id="questionInput" class="form-textarea" placeholder="카사 청약 절차와 분배 주기를 요약해줘. 초보자 기준으로 간단히 설명해주세요."></textarea>
+                    </div>
+                    <div class="form-columns">
+                        <div class="input-group">
+                            <label>리스크 선호</label>
+                            <select id="riskSelect" class="form-select">
+                                <option>낮음</option>
+                                <option selected>중간</option>
+                                <option>높음</option>
+                            </select>
+                        </div>
+                        <div class="input-group">
+                            <label>예산(원)</label>
+                            <input id="budgetInput" class="form-input" type="number" value="1000000" />
+                        </div>
+                        <div class="input-group">
+                            <label>목표</label>
+                            <select id="goalSelect" class="form-select">
+                                <option selected>단기현금흐름</option>
+                                <option>중기수익</option>
+                                <option>장기성장</option>
+                            </select>
+                        </div>
+                    </div>
+                    <button id="queryButton" class="primary-action-button" onclick="askQuestion()">
+                        <span id="querySpinner" class="loading-spinner is-hidden"></span>
+                        검색→생성
+                    </button>
+
+                    <!-- 결과 표시 -->
+                    <div id="resultsContainer" class="results-container is-hidden">
+                        <div class="results-meta">
+                            <span>응답 백엔드: <span id="backendInfo"></span></span>
+                            <span>· 문서: <span id="topKInfo"></span>개</span>
+                            <span>· 시간: <span id="timeInfo"></span>ms</span>
+                        </div>
+                        <article id="answerContent" class="answer-content"></article>
+                        <div id="sourcesContainer" class="sources-container"></div>
+                    </div>
+                </section>
+            </div>
+        </div>
+    </main>
+
+    <footer class="footer">
+        <div class="container">
+            <p>&copy; 2024 Tupick. All rights reserved.</p>
+        </div>
+    </footer>
+
+    <script src="/static/js/app.js"></script>
+</body>
+</html>
