@@ -1,0 +1,987 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>채팅 기록 - Tupick</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="main.css">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Pretendard', -apple-system, BlinkMacSystemFont, sans-serif;
+        }
+
+        :root {
+            --primary: #3B82F6;
+            --primary-dark: #2563EB;
+            --text: #1F2937;
+            --text-light: #6B7280;
+            --border: #E5E7EB;
+            --bg-light: #F8FAFC;
+            --shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            --radius: 12px;
+        }
+
+        body {
+            background-color: var(--bg-light);
+            color: var(--text);
+            line-height: 1.6;
+        }
+
+        /* 네비게이션 스타일 - features.html과 동일 */
+        .navbar {
+            background: white;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid var(--border);
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        .nav-logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin: 0;
+            line-height: 1.2;
+        }
+        
+        .logo-subtitle {
+            font-size: 0.875rem;
+            color: var(--text-light);
+            margin: 0;
+            line-height: 1.2;
+            margin-top: 4px;
+        }
+        
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .nav-link {
+            text-decoration: none;
+            color: var(--text-light);
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: var(--primary);
+        }
+        
+        .nav-button {
+            background: var(--primary);
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .nav-button:hover {
+            background: var(--primary-dark);
+        }
+
+        #user-name {
+            margin-right: 1rem;
+            color: var(--text-light);
+            text-decoration: none;
+            cursor: pointer;
+            font-weight: 500;
+            transition: color 0.3s ease;
+            padding: 0.5rem 0.75rem;
+            border-radius: 6px;
+            font-size: 0.9rem;
+        }
+
+        #user-name:hover {
+            color: var(--primary);
+            background: rgba(59, 130, 246, 0.1);
+        }
+
+        #settings-link {
+            display: none;
+            transition: color 0.3s ease;
+            font-size: 0.9rem;
+        }
+
+        #settings-link:hover {
+            color: var(--primary);
+        }
+
+        /* 채팅 기록 메인 콘텐츠 */
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 100px 20px 40px;
+        }
+
+        .page-header {
+            background: white;
+            color: var(--text);
+            padding: 30px;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            margin-bottom: 2rem;
+        }
+
+        .header-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+
+        h1 {
+            font-size: 2rem;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .subtitle {
+            font-size: 1.125rem;
+            color: var(--text-light);
+        }
+
+        .main-content {
+            display: flex;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow);
+            overflow: hidden;
+            min-height: 600px;
+        }
+
+        /* 채팅 목록 스타일 */
+        .chat-list {
+            width: 35%;
+            border-right: 1px solid var(--border);
+            display: flex;
+            flex-direction: column;
+        }
+
+        .list-header {
+            padding: 24px;
+            background: var(--bg-light);
+            border-bottom: 1px solid var(--border);
+        }
+
+        .list-header h2 {
+            font-size: 1.25rem;
+            margin-bottom: 8px;
+            color: var(--text);
+        }
+
+        .list-header p {
+            color: var(--text-light);
+            font-size: 0.9rem;
+        }
+
+        .search-box {
+            padding: 20px;
+            border-bottom: 1px solid var(--border);
+        }
+
+        .search-box input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 1px solid var(--border);
+            border-radius: var(--radius);
+            font-size: 14px;
+            outline: none;
+            transition: border-color 0.3s ease;
+        }
+
+        .search-box input:focus {
+            border-color: var(--primary);
+        }
+
+        .chats {
+            flex: 1;
+            overflow-y: auto;
+            padding: 10px 0;
+        }
+
+        .chat-item {
+            padding: 16px 20px;
+            border-bottom: 1px solid var(--border);
+            cursor: pointer;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .chat-item:hover {
+            background-color: var(--bg-light);
+        }
+
+        .chat-item.active {
+            background-color: rgba(59, 130, 246, 0.05);
+            border-left: 4px solid var(--primary);
+        }
+
+        .chat-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            color: white;
+            font-weight: bold;
+            font-size: 16px;
+        }
+
+        .chat-info {
+            flex: 1;
+        }
+
+        .chat-title {
+            font-weight: 600;
+            font-size: 15px;
+            margin-bottom: 4px;
+            color: var(--text);
+        }
+
+        .chat-preview {
+            font-size: 13px;
+            color: var(--text-light);
+            white-space: nowrap;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            max-width: 200px;
+        }
+
+        .chat-date {
+            font-size: 12px;
+            color: var(--text-light);
+            margin-top: 4px;
+        }
+
+        /* 채팅 내용 스타일 */
+        .chat-detail {
+            width: 65%;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .detail-header {
+            padding: 20px 24px;
+            border-bottom: 1px solid var(--border);
+            display: flex;
+            align-items: center;
+            background: var(--bg-light);
+        }
+
+        .detail-avatar {
+            width: 45px;
+            height: 45px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, var(--primary), var(--primary-dark));
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-right: 12px;
+            color: white;
+            font-weight: bold;
+            font-size: 18px;
+        }
+
+        .detail-info h3 {
+            font-size: 1.125rem;
+            margin-bottom: 4px;
+            color: var(--text);
+        }
+
+        .detail-info p {
+            font-size: 14px;
+            color: var(--text-light);
+        }
+
+        .chat-messages {
+            flex: 1;
+            padding: 24px;
+            overflow-y: auto;
+            background-color: var(--bg-light);
+        }
+
+        .message {
+            margin-bottom: 20px;
+            display: flex;
+            align-items: flex-start;
+        }
+
+        .message.received .message-content {
+            background-color: white;
+            border-radius: 0 18px 18px 18px;
+            box-shadow: var(--shadow);
+        }
+
+        .message.sent {
+            flex-direction: row-reverse;
+        }
+
+        .message.sent .message-content {
+            background-color: #e3f2fd;
+            border-radius: 18px 0 18px 18px;
+            box-shadow: var(--shadow);
+        }
+
+        .message-avatar {
+            width: 36px;
+            height: 36px;
+            border-radius: 50%;
+            margin: 0 10px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-weight: bold;
+            color: white;
+            font-size: 14px;
+        }
+
+        .sent .message-avatar {
+            background: var(--primary);
+        }
+
+        .received .message-avatar {
+            background: #4ECDC4;
+        }
+
+        .message-content {
+            padding: 12px 16px;
+            max-width: 70%;
+        }
+
+        .message-text {
+            margin-bottom: 5px;
+            line-height: 1.5;
+        }
+
+        .message-time {
+            font-size: 12px;
+            color: var(--text-light);
+            text-align: right;
+        }
+
+        .message.sent .message-time {
+            text-align: left;
+        }
+
+        .no-chat {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            height: 100%;
+            color: var(--text-light);
+            text-align: center;
+            padding: 40px 20px;
+        }
+
+        .no-chat i {
+            font-size: 48px;
+            margin-bottom: 15px;
+            color: var(--border);
+        }
+
+        .delete-btn {
+            background: #EF4444;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: var(--radius);
+            cursor: pointer;
+            font-size: 14px;
+            margin-top: 10px;
+            transition: all 0.3s ease;
+            font-weight: 500;
+        }
+
+        .delete-btn:hover {
+            background: #DC2626;
+            transform: translateY(-2px);
+        }
+
+        .empty-state {
+            text-align: center;
+            padding: 60px 20px;
+            color: var(--text-light);
+        }
+
+        .empty-state i {
+            font-size: 64px;
+            margin-bottom: 20px;
+            color: var(--border);
+        }
+
+        .loading {
+            text-align: center;
+            padding: 40px 20px;
+            color: var(--text-light);
+        }
+
+        .loading-spinner {
+            border: 4px solid #f3f3f3;
+            border-top: 4px solid var(--primary);
+            border-radius: 50%;
+            width: 40px;
+            height: 40px;
+            animation: spin 2s linear infinite;
+            margin: 0 auto 20px;
+        }
+
+        @keyframes spin {
+            0% { transform: rotate(0deg); }
+            100% { transform: rotate(360deg); }
+        }
+
+        /* 반응형 */
+        @media (max-width: 768px) {
+            .nav-menu {
+                gap: 1rem;
+            }
+            
+            .nav-link {
+                font-size: 0.8rem;
+            }
+            
+            .nav-button {
+                padding: 0.4rem 1rem;
+                font-size: 0.8rem;
+            }
+
+            .nav-logo h1 {
+                font-size: 1.3rem;
+            }
+
+            .logo-subtitle {
+                font-size: 0.7rem;
+            }
+
+            .container {
+                padding: 90px 1rem 2rem;
+            }
+
+            .main-content {
+                flex-direction: column;
+            }
+
+            .chat-list,
+            .chat-detail {
+                width: 100%;
+            }
+
+            .chat-detail {
+                height: 60vh;
+            }
+
+            .header-content {
+                flex-direction: column;
+                gap: 1rem;
+                align-items: flex-start;
+            }
+
+            h1 {
+                font-size: 1.5rem;
+            }
+
+            .subtitle {
+                font-size: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 네비게이션 바 (features.html과 동일) -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h1>Tupick</h1>
+                <span class="logo-subtitle">조각투자 AI 분석</span>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">홈</a>
+                <a href="features.html" class="nav-link">기능</a>
+                <a href="how-it-works.html" class="nav-link">작동방식</a>
+                <a href="about.html" class="nav-link">서비스 소개</a>
+                <a href="profile.html" class="nav-link" id="settings-link" style="display: none;">⚙️ 내 설정</a>
+                <div id="auth-section">
+                    <a href="login.html" class="nav-button" id="login-button">로그인</a>
+                    <div id="user-menu" style="display: none; align-items: center;">
+                        <a href="profile-history.html" id="user-name"
+                            style="margin-right: 1rem; color: #6B7280; text-decoration: none; cursor: pointer; font-weight: 500;"></a>
+                        <button onclick="logout()" class="nav-button" style="background: #EF4444;">로그아웃</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <!-- 채팅 기록 메인 콘텐츠 -->
+    <div class="container">
+        <div class="page-header">
+            <div class="header-content">
+                <div>
+                    <h1>채팅 기록</h1>
+                    <p class="subtitle">지난 대화를 확인하고 관리하세요</p>
+                </div>
+            </div>
+        </div>
+
+        <div class="main-content">
+            <!-- 채팅 목록 영역 -->
+            <div class="chat-list">
+                <div class="list-header">
+                    <h2>대화 목록</h2>
+                    <p>최근 대화한 기록들이 표시됩니다</p>
+                </div>
+
+                <div class="search-box">
+                    <input type="text" id="searchInput" placeholder="대화 기록 검색...">
+                </div>
+
+                <div class="chats" id="chatList">
+                    <div class="loading">
+                        <div class="loading-spinner"></div>
+                        <p>채팅 기록을 불러오는 중...</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- 채팅 내용 영역 -->
+            <div class="chat-detail">
+                <div class="detail-header">
+                    <div class="detail-avatar">AI</div>
+                    <div class="detail-info">
+                        <h3 id="chatTitle">대화를 선택해주세요</h3>
+                        <p id="chatInfo">왼쪽에서 대화를 선택하여 내용을 확인하세요</p>
+                    </div>
+                </div>
+
+                <div class="chat-messages" id="chatMessages">
+                    <div class="no-chat">
+                        <i>💬</i>
+                        <h3>대화를 선택해주세요</h3>
+                        <p>왼쪽 목록에서 확인하고 싶은 대화를 선택하시면<br>해당 대화 내용이 여기에 표시됩니다.</p>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // 네비게이션 스크롤 효과
+        window.addEventListener('scroll', function() {
+            const navbar = document.querySelector('.navbar');
+            if (navbar && window.scrollY > 100) {
+                navbar.style.background = 'rgba(255, 255, 255, 0.95)';
+                navbar.style.backdropFilter = 'blur(10px)';
+            } else if (navbar) {
+                navbar.style.background = 'white';
+                navbar.style.backdropFilter = 'none';
+            }
+        });
+
+        // 인증 상태 업데이트 (features.html과 동일)
+        function updateAuthUI() {
+            const token = localStorage.getItem('access_token');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            const authSection = document.getElementById('auth-section');
+            const settingsLink = document.getElementById('settings-link');
+            const loginButton = document.getElementById('login-button');
+            const userMenu = document.getElementById('user-menu');
+            const userName = document.getElementById('user-name');
+            
+            if (!authSection) {
+                console.warn('auth-section 없음');
+                return;
+            }
+            
+            if (token && user.email) {
+                if (loginButton) loginButton.style.display = 'none';
+                if (userMenu) userMenu.style.display = 'flex';
+                if (userName) userName.textContent = `${user.name || user.email}님`;
+                if (settingsLink) settingsLink.style.display = 'block';
+            } else {
+                if (loginButton) loginButton.style.display = 'block';
+                if (userMenu) userMenu.style.display = 'none';
+                if (settingsLink) settingsLink.style.display = 'none';
+            }
+        }
+
+        function logout() {
+            if (confirm('로그아웃 하시겠습니까?')) {
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('user');
+                window.location.href = '/';
+            }
+        }
+
+        function handleAuthRedirect() {
+            const urlParams = new URLSearchParams(window.location.search);
+            const token = urlParams.get('token');
+            const userEmail = urlParams.get('user');
+    
+            if (token && userEmail) {
+                localStorage.setItem('access_token', token);
+                const tempUser = {
+                    email: userEmail,
+                    name: userEmail.split('@')[0]
+                };
+                localStorage.setItem('user', JSON.stringify(tempUser));
+                updateAuthUI();
+                window.history.replaceState({}, document.title, window.location.pathname);
+            }
+        }
+
+        // 채팅 기록 관련 함수들
+        function getToken() {
+            return localStorage.getItem('access_token') || sessionStorage.getItem('access_token');
+        }
+
+        async function loadChatHistory() {
+            try {
+                const token = getToken();
+                const headers = {};
+
+                if (token) {
+                    headers['Authorization'] = `Bearer ${token}`;
+                }
+
+                // 실제 API 호출 대신 더미 데이터 사용 (개발용)
+                setTimeout(() => {
+                    const dummyData = [
+                        {
+                            id: '1',
+                            timestamp: new Date(Date.now() - 86400000).toISOString(),
+                            messages: [
+                                {
+                                    role: 'user',
+                                    content: '조각투자에 대해 알려주세요',
+                                    timestamp: new Date(Date.now() - 86400000).toISOString()
+                                },
+                                {
+                                    role: 'assistant',
+                                    content: '조각투자는 고가의 자산을 작은 단위로 나누어 투자하는 방식입니다. 부동산, 예술품, 음원 등 다양한 자산에 투자할 수 있어요.',
+                                    timestamp: new Date(Date.now() - 86350000).toISOString()
+                                }
+                            ]
+                        },
+                        {
+                            id: '2',
+                            timestamp: new Date(Date.now() - 172800000).toISOString(),
+                            messages: [
+                                {
+                                    role: 'user',
+                                    content: 'Tupick의 주요 기능은 무엇인가요?',
+                                    timestamp: new Date(Date.now() - 172800000).toISOString()
+                                },
+                                {
+                                    role: 'assistant',
+                                    content: 'Tupick은 AI 기반 조각투자 분석 플랫폼으로, 스마트 데이터 수집, AI 분석, 맞춤형 리포트 등 다양한 기능을 제공합니다.',
+                                    timestamp: new Date(Date.now() - 172750000).toISOString()
+                                }
+                            ]
+                        }
+                    ];
+                    displayChatList(dummyData);
+                }, 1000);
+
+            } catch (error) {
+                console.error('Error:', error);
+                showLoginRequired();
+            }
+        }
+
+        function showLoginRequired() {
+            document.getElementById('chatList').innerHTML = `
+                <div class="empty-state">
+                    <i>🔒</i>
+                    <h3>로그인이 필요합니다</h3>
+                    <p>채팅 기록을 보려면 로그인해주세요.</p>
+                    <button onclick="window.location.href='login.html'" class="nav-button" style="margin-top: 15px;">
+                        로그인하기
+                    </button> 
+                </div>
+            `;
+        }
+
+        // 채팅 목록 표시
+        function displayChatList(chatHistory) {
+            const chatList = document.getElementById('chatList');
+
+            if (!chatHistory || chatHistory.length === 0) {
+                chatList.innerHTML = `
+                    <div class="empty-state">
+                        <i>💬</i>
+                        <h3>아직 대화 기록이 없습니다</h3>
+                        <p>메인 페이지에서 챗봇과 대화를 시작해보세요!</p>
+                        <button class="nav-button" onclick="window.location.href='index.html'" style="margin-top: 15px;">
+                            대화 시작하기
+                        </button>
+                    </div>
+                `;
+                return;
+            }
+
+            let html = '';
+            chatHistory.forEach((chat, index) => {
+                const firstUserMessage = chat.messages?.find(msg => msg.role === 'user');
+                const preview = firstUserMessage ?
+                    (firstUserMessage.content.length > 30 ?
+                        firstUserMessage.content.substring(0, 30) + '...' :
+                        firstUserMessage.content) :
+                    '대화 내용';
+
+                const date = new Date(chat.timestamp);
+                const formattedDate = `${date.getFullYear()}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getDate().toString().padStart(2, '0')}`;
+
+                html += `
+                    <div class="chat-item" data-chat-id="${chat.id}" onclick="selectChat('${chat.id}')">
+                        <div class="chat-avatar">AI</div>
+                        <div class="chat-info">
+                            <div class="chat-title">대화 ${index + 1}</div>
+                            <div class="chat-preview">${preview}</div>
+                            <div class="chat-date">${formattedDate}</div>
+                        </div>
+                    </div>
+                `;
+            });
+
+            chatList.innerHTML = html;
+
+            // 첫 번째 채팅 자동 선택
+            if (chatHistory.length > 0) {
+                selectChat(chatHistory[0].id);
+            }
+        }
+
+        // 채팅 선택
+        function selectChat(chatId) {
+            // 활성화 표시
+            document.querySelectorAll('.chat-item').forEach(item => {
+                item.classList.remove('active');
+            });
+            const selectedItem = document.querySelector(`[data-chat-id="${chatId}"]`);
+            if (selectedItem) {
+                selectedItem.classList.add('active');
+            }
+
+            // 채팅 내용 로드
+            loadChatDetail(chatId);
+        }
+
+        // 채팅 내용 로드
+        async function loadChatDetail(chatId) {
+            try {
+                // 실제 API 호출 대신 더미 데이터 사용 (개발용)
+                setTimeout(() => {
+                    const dummyChats = {
+                        '1': {
+                            id: '1',
+                            timestamp: new Date(Date.now() - 86400000).toISOString(),
+                            messages: [
+                                {
+                                    role: 'user',
+                                    content: '조각투자에 대해 알려주세요',
+                                    timestamp: new Date(Date.now() - 86400000).toISOString()
+                                },
+                                {
+                                    role: 'assistant',
+                                    content: '조각투자는 고가의 자산을 작은 단위로 나누어 투자하는 방식입니다. 부동산, 예술품, 음원 등 다양한 자산에 투자할 수 있어요. 주요 장점은 소액으로 고가 자산에 투자할 수 있고, 다양한 자산에 분산 투자하여 리스크를 줄일 수 있다는 점입니다.',
+                                    timestamp: new Date(Date.now() - 86350000).toISOString()
+                                },
+                                {
+                                    role: 'user',
+                                    content: '어떤 플랫폼이 있나요?',
+                                    timestamp: new Date(Date.now() - 86300000).toISOString()
+                                },
+                                {
+                                    role: 'assistant',
+                                    content: '국내에는 KASA, TESSA, 뮤직카우 등 다양한 조각투자 플랫폼이 있습니다. 각 플랫폼마다 특화된 자산군이 다르니 본인의 투자 목적에 맞게 선택하시는 것이 좋아요.',
+                                    timestamp: new Date(Date.now() - 86250000).toISOString()
+                                }
+                            ]
+                        },
+                        '2': {
+                            id: '2',
+                            timestamp: new Date(Date.now() - 172800000).toISOString(),
+                            messages: [
+                                {
+                                    role: 'user',
+                                    content: 'Tupick의 주요 기능은 무엇인가요?',
+                                    timestamp: new Date(Date.now() - 172800000).toISOString()
+                                },
+                                {
+                                    role: 'assistant',
+                                    content: 'Tupick은 AI 기반 조각투자 분석 플랫폼으로 다음과 같은 주요 기능을 제공합니다:\n\n1. 스마트 데이터 수집: 다양한 플랫폼에서 실시간 정보 수집\n2. AI 기반 분석: 자연어 처리 기술로 투자 정보 심층 분석\n3. 맞춤형 리포트: 사용자 프로필에 맞는 투자 리포트 제공\n4. 리스크 평가: 투자 위험도 평가 및 관리',
+                                    timestamp: new Date(Date.now() - 172750000).toISOString()
+                                }
+                            ]
+                        }
+                    };
+
+                    const chat = dummyChats[chatId];
+                    if (chat) {
+                        displayChatDetail(chat);
+                    } else {
+                        document.getElementById('chatMessages').innerHTML = `
+                            <div class="no-chat">
+                                <i>⚠️</i>
+                                <h3>대화를 찾을 수 없습니다</h3>
+                                <p>선택한 대화가 존재하지 않거나 삭제되었습니다.</p>
+                            </div>
+                        `;
+                    }
+                }, 500);
+
+            } catch (error) {
+                console.error('Error loading chat detail:', error);
+                document.getElementById('chatMessages').innerHTML = `
+                    <div class="no-chat">
+                        <i>⚠️</i>
+                        <h3>채팅 내용을 불러오지 못했습니다</h3>
+                        <p>${error.message}</p>
+                    </div>
+                `;
+            }
+        }
+
+        // 채팅 내용 표시
+        function displayChatDetail(chat) {
+            const chatMessages = document.getElementById('chatMessages');
+            const chatTitle = document.getElementById('chatTitle');
+            const chatInfo = document.getElementById('chatInfo');
+
+            // 헤더 업데이트
+            const date = new Date(chat.timestamp);
+            const formattedDate = `${date.getFullYear()}.${(date.getMonth() + 1).toString().padStart(2, '0')}.${date.getDate().toString().padStart(2, '0')}`;
+            const messageCount = chat.messages?.length || 0;
+
+            chatTitle.textContent = `대화 (${messageCount}개 메시지)`;
+            chatInfo.textContent = `${formattedDate} · ${messageCount}개 메시지`;
+
+            // 메시지 표시
+            let html = '';
+            if (chat.messages && chat.messages.length > 0) {
+                chat.messages.forEach(message => {
+                    const time = new Date(message.timestamp);
+                    const formattedTime = `${time.getHours().toString().padStart(2, '0')}:${time.getMinutes().toString().padStart(2, '0')}`;
+
+                    if (message.role === 'user') {
+                        html += `
+                            <div class="message sent">
+                                <div class="message-avatar">나</div>
+                                <div class="message-content">
+                                    <div class="message-text">${message.content}</div>
+                                    <div class="message-time">${formattedTime}</div>
+                                </div>
+                            </div>
+                        `;
+                    } else {
+                        html += `
+                            <div class="message received">
+                                <div class="message-avatar">AI</div>
+                                <div class="message-content">
+                                    <div class="message-text">${message.content}</div>
+                                    <div class="message-time">${formattedTime}</div>
+                                </div>
+                            </div>
+                        `;
+                    }
+                });
+
+                // 삭제 버튼 추가
+                html += `
+                    <div style="text-align: center; margin-top: 20px;">
+                        <button class="delete-btn" onclick="deleteChat('${chat.id}')">이 대화 삭제</button>
+                    </div>
+                `;
+            } else {
+                html = `
+                    <div class="no-chat">
+                        <i>💬</i>
+                        <h3>대화 내용이 없습니다</h3>
+                        <p>이 대화에는 메시지가 없습니다.</p>
+                    </div>
+                `;
+            }
+
+            chatMessages.innerHTML = html;
+            chatMessages.scrollTop = chatMessages.scrollHeight;
+        }
+
+        // 채팅 삭제
+        async function deleteChat(chatId) {
+            if (!confirm('정말 이 대화를 삭제하시겠습니까?')) {
+                return;
+            }
+
+            try {
+                // 실제 API 호출 대신 더미 처리
+                setTimeout(() => {
+                    alert('대화가 삭제되었습니다.');
+                    loadChatHistory(); // 목록 새로고침
+                }, 500);
+
+            } catch (error) {
+                console.error('Error deleting chat:', error);
+                alert('채팅 삭제에 실패했습니다: ' + error.message);
+            }
+        }
+
+        // 검색 기능
+        document.getElementById('searchInput').addEventListener('input', function (e) {
+            const searchTerm = e.target.value.toLowerCase();
+            const chatItems = document.querySelectorAll('.chat-item');
+
+            chatItems.forEach(item => {
+                const preview = item.querySelector('.chat-preview')?.textContent.toLowerCase() || '';
+                const title = item.querySelector('.chat-title')?.textContent.toLowerCase() || '';
+
+                if (preview.includes(searchTerm) || title.includes(searchTerm)) {
+                    item.style.display = 'flex';
+                } else {
+                    item.style.display = 'none';
+                }
+            });
+        });
+
+        // 페이지 로드 시 초기화
+        document.addEventListener('DOMContentLoaded', function() {
+            console.log('채팅 기록 페이지 로드됨');
+            updateAuthUI();
+            handleAuthRedirect();
+            loadChatHistory();
+        });
+    </script>
+</body>
+</html>

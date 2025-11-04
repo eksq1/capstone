@@ -1,0 +1,701 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>내 설정 - Tupick</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        
+        :root {
+            --primary: #3B82F6;
+            --primary-dark: #2563EB;
+            --text: #1F2937;
+            --text-light: #6B7280;
+            --border: #E5E7EB;
+            --bg-light: #F8FAFC;
+            --shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            --radius: 12px;
+        }
+
+        body {
+            font-family: 'Pretendard', -apple-system, sans-serif;
+            background: var(--bg-light);
+            min-height: 100vh;
+        }
+
+        /* 네비게이션 - 다른 페이지들과 동일하게 */
+        .navbar {
+            background: white;
+            position: fixed;
+            top: 0;
+            width: 100%;
+            z-index: 1000;
+            transition: all 0.3s ease;
+            border-bottom: 1px solid #E5E7EB;
+        }
+        
+        .nav-container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 1rem 20px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .nav-logo {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: center;
+        }
+
+        .nav-logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: #3B82F6;
+            margin: 0;
+            line-height: 1.2;
+        }
+        
+        .logo-subtitle {
+            font-size: 0.875rem;
+            color: #6B7280;
+            margin: 0;
+            line-height: 1.2;
+            margin-top: 4px;
+        }
+        
+        .nav-menu {
+            display: flex;
+            align-items: center;
+            gap: 2rem;
+        }
+        
+        .nav-link {
+            text-decoration: none;
+            color: #6B7280;
+            font-weight: 500;
+            transition: color 0.3s ease;
+        }
+        
+        .nav-link:hover {
+            color: #3B82F6;
+        }
+
+        .nav-link.active {
+            color: #3B82F6;
+            font-weight: 600;
+        }
+        
+        .nav-button {
+            background: #3B82F6;
+            color: white;
+            padding: 0.5rem 1.5rem;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: 500;
+            transition: background 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+        
+        .nav-button:hover {
+            background: #2563EB;
+        }
+
+        /* 메인 컨테이너 */
+        .container {
+            max-width: 800px;
+            margin: 120px auto 3rem;
+            padding: 0 20px;
+        }
+
+        .profile-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.1);
+            padding: 40px;
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(20px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .profile-header {
+            text-align: center;
+            margin-bottom: 40px;
+        }
+
+        .profile-header h1 {
+            font-size: 2rem;
+            color: #1F2937;
+            margin-bottom: 8px;
+        }
+
+        .profile-header p {
+            color: #6B7280;
+            font-size: 1rem;
+        }
+
+        .form-group {
+            margin-bottom: 30px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 12px;
+            color: #374151;
+            font-weight: 600;
+            font-size: 1rem;
+        }
+
+        .form-description {
+            color: #6B7280;
+            font-size: 0.875rem;
+            margin-bottom: 12px;
+        }
+
+        .radio-group {
+            display: flex;
+            gap: 12px;
+            flex-wrap: wrap;
+        }
+
+        .radio-option {
+            flex: 1;
+            min-width: 150px;
+        }
+
+        .radio-option input[type="radio"] {
+            display: none;
+        }
+
+        .radio-label {
+            display: block;
+            padding: 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: #6B7280;
+        }
+
+        .radio-option input[type="radio"]:checked + .radio-label {
+            border-color: #3B82F6;
+            background: #EFF6FF;
+            color: #3B82F6;
+        }
+
+        .radio-label:hover {
+            border-color: #3B82F6;
+            transform: translateY(-2px);
+        }
+
+        .form-input {
+            width: 100%;
+            padding: 14px 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+        }
+
+        .form-input:focus {
+            outline: none;
+            border-color: #3B82F6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .checkbox-group {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(150px, 1fr));
+            gap: 12px;
+        }
+
+        .checkbox-option {
+            position: relative;
+        }
+
+        .checkbox-option input[type="checkbox"] {
+            display: none;
+        }
+
+        .checkbox-label {
+            display: block;
+            padding: 12px 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 10px;
+            text-align: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-weight: 500;
+            color: #6B7280;
+        }
+
+        .checkbox-option input[type="checkbox"]:checked + .checkbox-label {
+            border-color: #3B82F6;
+            background: #EFF6FF;
+            color: #3B82F6;
+        }
+
+        .checkbox-label:hover {
+            border-color: #3B82F6;
+        }
+
+        .budget-input-wrapper {
+            position: relative;
+        }
+
+        .budget-input-wrapper::after {
+            content: '원';
+            position: absolute;
+            right: 16px;
+            top: 50%;
+            transform: translateY(-50%);
+            color: #6B7280;
+            font-weight: 500;
+        }
+
+        .budget-suggestions {
+            display: flex;
+            gap: 8px;
+            margin-top: 12px;
+            flex-wrap: wrap;
+        }
+
+        .budget-suggestion {
+            padding: 8px 16px;
+            background: #F3F4F6;
+            border-radius: 8px;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            font-size: 0.875rem;
+            color: #4B5563;
+        }
+
+        .budget-suggestion:hover {
+            background: #3B82F6;
+            color: white;
+        }
+
+        .submit-section {
+            margin-top: 40px;
+            display: flex;
+            gap: 12px;
+        }
+
+        .submit-button {
+            flex: 1;
+            padding: 16px;
+            background: #3B82F6;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .submit-button:hover {
+            background: #2563EB;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .skip-button {
+            padding: 16px 32px;
+            background: white;
+            color: #6B7280;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .skip-button:hover {
+            border-color: #3B82F6;
+            color: #3B82F6;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                margin: 100px auto 1.5rem;
+            }
+
+            .profile-card {
+                padding: 24px;
+            }
+
+            .radio-group {
+                flex-direction: column;
+            }
+
+            .radio-option {
+                width: 100%;
+            }
+
+            .checkbox-group {
+                grid-template-columns: 1fr 1fr;
+            }
+
+            .submit-section {
+                flex-direction: column;
+            }
+            
+            .nav-menu {
+                gap: 1rem;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- 네비게이션 - 다른 페이지들과 동일하게 -->
+    <nav class="navbar">
+        <div class="nav-container">
+            <div class="nav-logo">
+                <h1>Tupick</h1>
+                <span class="logo-subtitle">조각투자 AI 분석</span>
+            </div>
+            <div class="nav-menu">
+                <a href="index.html" class="nav-link">홈</a>
+                <a href="features.html" class="nav-link">기능</a>
+                <a href="how-it-works.html" class="nav-link">작동방식</a>
+                <a href="about.html" class="nav-link">서비스 소개</a>
+                <a href="profile.html" class="nav-link active">⚙️ 내 설정</a>
+                <div id="auth-section">
+                    <a href="login.html" class="nav-button" id="login-button">로그인</a>
+                    <div id="user-menu" style="display: none; align-items: center;">
+                        <a href="profile-history.html" id="user-name"
+                            style="margin-right: 1rem; color: #6B7280; text-decoration: none; cursor: pointer; font-weight: 500;"></a>
+                        <button onclick="logout()" class="nav-button" style="background: #EF4444;">로그아웃</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </nav>
+
+    <div class="container">
+        <div class="profile-card">
+            <div class="profile-header">
+                <h1>⚙️ 내 설정</h1>
+                <p>맞춤형 조각투자 분석을 위해 프로필을 설정해주세요</p>
+            </div>
+
+            <form id="profileForm">
+                <!-- 투자 성향 -->
+                <div class="form-group">
+                    <label>💡 투자 성향</label>
+                    <p class="form-description">
+                        리스크에 대한 선호도를 선택해주세요
+                    </p>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="risk-low" name="risk" value="낮음" checked>
+                            <label for="risk-low" class="radio-label">
+                                😌 안전 추구<br>
+                                <small style="font-size: 0.75rem;">낮은 리스크</small>
+                            </label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="risk-mid" name="risk" value="중간">
+                            <label for="risk-mid" class="radio-label">
+                                ⚖️ 균형 추구<br>
+                                <small style="font-size: 0.75rem;">중간 리스크</small>
+                            </label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="risk-high" name="risk" value="높음">
+                            <label for="risk-high" class="radio-label">
+                                🚀 수익 추구<br>
+                                <small style="font-size: 0.75rem;">높은 리스크</small>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 투자 예산 -->
+                <div class="form-group">
+                    <label for="budget">💰 투자 예산</label>
+                    <p class="form-description">
+                        조각투자에 사용할 예산을 입력해주세요
+                    </p>
+                    <div class="budget-input-wrapper">
+                        <input type="number" id="budget" class="form-input" 
+                               value="1000000" min="0" step="100000" required>
+                    </div>
+                    <div class="budget-suggestions">
+                        <button type="button" class="budget-suggestion" onclick="setBudget(500000)">
+                            50만원
+                        </button>
+                        <button type="button" class="budget-suggestion" onclick="setBudget(1000000)">
+                            100만원
+                        </button>
+                        <button type="button" class="budget-suggestion" onclick="setBudget(3000000)">
+                            300만원
+                        </button>
+                        <button type="button" class="budget-suggestion" onclick="setBudget(5000000)">
+                            500만원
+                        </button>
+                        <button type="button" class="budget-suggestion" onclick="setBudget(10000000)">
+                            1,000만원
+                        </button>
+                    </div>
+                </div>
+
+                <!-- 투자 목표 -->
+                <div class="form-group">
+                    <label>🎯 투자 목표</label>
+                    <p class="form-description">
+                        주요 투자 목표를 선택해주세요
+                    </p>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="goal-short" name="goal" value="단기현금흐름" checked>
+                            <label for="goal-short" class="radio-label">
+                                💸 단기 현금흐름
+                            </label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="goal-long" name="goal" value="장기자산증식">
+                            <label for="goal-long" class="radio-label">
+                                📈 장기 자산 증식
+                            </label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="goal-balance" name="goal" value="수익안정성균형">
+                            <label for="goal-balance" class="radio-label">
+                                ⚖️ 수익/안정성 균형
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 관심 분야 -->
+                <div class="form-group">
+                    <label>🌟 관심 분야 (복수 선택 가능)</label>
+                    <p class="form-description">
+                        관심있는 조각투자 분야를 선택해주세요
+                    </p>
+                    <div class="checkbox-group">
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="field-real" value="부동산" checked>
+                            <label for="field-real" class="checkbox-label">
+                                🏠 부동산
+                            </label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="field-art" value="예술작품" checked>
+                            <label for="field-art" class="checkbox-label">
+                                🎨 예술작품
+                            </label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="field-music" value="음악저작권" checked>
+                            <label for="field-music" class="checkbox-label">
+                                🎵 음악저작권
+                            </label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="field-content" value="콘텐츠">
+                            <label for="field-content" class="checkbox-label">
+                                🎬 콘텐츠
+                            </label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="field-stock" value="주식">
+                            <label for="field-stock" class="checkbox-label">
+                                📊 주식
+                            </label>
+                        </div>
+                        <div class="checkbox-option">
+                            <input type="checkbox" id="field-wine" value="와인">
+                            <label for="field-wine" class="checkbox-label">
+                                🍷 와인/위스키
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- 투자 경험 -->
+                <div class="form-group">
+                    <label>📚 투자 경험</label>
+                    <p class="form-description">
+                        조각투자 경험 수준을 선택해주세요
+                    </p>
+                    <div class="radio-group">
+                        <div class="radio-option">
+                            <input type="radio" id="exp-beginner" name="experience" value="초보자" checked>
+                            <label for="exp-beginner" class="radio-label">
+                                🌱 초보자
+                            </label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="exp-intermediate" name="experience" value="중급자">
+                            <label for="exp-intermediate" class="radio-label">
+                                🌿 중급자
+                            </label>
+                        </div>
+                        <div class="radio-option">
+                            <input type="radio" id="exp-expert" name="experience" value="전문가">
+                            <label for="exp-expert" class="radio-label">
+                                🌳 전문가
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="submit-section">
+                    <button type="submit" class="submit-button">
+                        ✨ 프로필 저장하고 시작하기
+                    </button>
+                    <button type="button" class="skip-button" onclick="skipProfile()">
+                        나중에 설정
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // 인증 상태 업데이트
+        function updateAuthUI() {
+            const token = localStorage.getItem('access_token');
+            const user = JSON.parse(localStorage.getItem('user') || '{}');
+            
+            const authSection = document.getElementById('auth-section');
+            const loginButton = document.getElementById('login-button');
+            const userMenu = document.getElementById('user-menu');
+            const userName = document.getElementById('user-name');
+            
+            if (!authSection) return;
+            
+            if (token && user.email) {
+                if (loginButton) loginButton.style.display = 'none';
+                if (userMenu) userMenu.style.display = 'flex';
+                if (userName) userName.textContent = `${user.name || user.email}님`;
+            } else {
+                if (loginButton) loginButton.style.display = 'block';
+                if (userMenu) userMenu.style.display = 'none';
+                // 로그인되지 않은 경우 로그인 페이지로 리디렉션
+                window.location.href = 'login.html';
+            }
+        }
+
+        // 예산 설정 함수
+        function setBudget(amount) {
+            document.getElementById('budget').value = amount;
+        }
+
+        // 예산 입력 시 천단위 콤마 표시
+        const budgetInput = document.getElementById('budget');
+        budgetInput.addEventListener('blur', function() {
+            const value = parseInt(this.value) || 0;
+            this.value = value;
+        });
+
+        // 프로필 저장
+        document.getElementById('profileForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            const token = localStorage.getItem('access_token');
+            if (!token) {
+                alert('로그인이 필요합니다');
+                window.location.href = '/login.html';
+                return;
+            }
+
+            // 관심 분야 수집
+            const interests = [];
+            document.querySelectorAll('input[type="checkbox"]:checked').forEach(checkbox => {
+                interests.push(checkbox.value);
+            });
+
+            const profileData = {
+                risk: document.querySelector('input[name="risk"]:checked').value,
+                budget: parseInt(document.getElementById('budget').value),
+                goal: document.querySelector('input[name="goal"]:checked').value,
+                interest_field: interests.join(', '),
+                experience_level: document.querySelector('input[name="experience"]:checked').value
+            };
+
+            try {
+                // 로컬 스토리지에 프로필 저장
+                localStorage.setItem('user_profile', JSON.stringify(profileData));
+                
+                alert('✅ 프로필이 저장되었습니다!');
+                window.location.href = 'index.html';
+                
+            } catch (error) {
+                alert('❌ 프로필 저장에 실패했습니다');
+            }
+        });
+
+        // 나중에 설정
+        function skipProfile() {
+            if (confirm('프로필 설정을 건너뛰시겠습니까?\n나중에 설정에서 변경할 수 있습니다.')) {
+                window.location.href = 'index.html';
+            }
+        }
+
+        // 로그아웃
+        function logout() {
+            if (confirm('로그아웃 하시겠습니까?')) {
+                localStorage.removeItem('access_token');
+                localStorage.removeItem('user');
+                localStorage.removeItem('user_profile');
+                window.location.href = '/';
+            }
+        }
+
+        // 페이지 로드 시 기존 프로필 불러오기
+        window.addEventListener('DOMContentLoaded', function() {
+            updateAuthUI();
+            
+            const savedProfile = localStorage.getItem('user_profile');
+            if (savedProfile) {
+                const profile = JSON.parse(savedProfile);
+                
+                // 기존 프로필 데이터 설정
+                if (profile.risk) {
+                    const radio = document.querySelector(`input[name="risk"][value="${profile.risk}"]`);
+                    if (radio) radio.checked = true;
+                }
+                if (profile.budget) {
+                    document.getElementById('budget').value = profile.budget;
+                }
+                if (profile.goal) {
+                    const radio = document.querySelector(`input[name="goal"][value="${profile.goal}"]`);
+                    if (radio) radio.checked = true;
+                }
+                if (profile.experience_level) {
+                    const radio = document.querySelector(`input[name="experience"][value="${profile.experience_level}"]`);
+                    if (radio) radio.checked = true;
+                }
+                if (profile.interest_field) {
+                    const fields = profile.interest_field.split(',').map(f => f.trim());
+                    document.querySelectorAll('input[type="checkbox"]').forEach(checkbox => {
+                        checkbox.checked = fields.includes(checkbox.value);
+                    });
+                }
+            }
+        });
+    </script>
+</body>
+</html>

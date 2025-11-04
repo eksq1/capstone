@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+<html lang="ko">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>회원가입 - Tupick</title>
+    <link href="https://fonts.googleapis.com/css2?family=Pretendard:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <style>
+        /* 독립적인 CSS - main.css와 충돌 방지 */
+        .register-page * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        .register-page {
+            font-family: 'Pretendard', -apple-system, sans-serif;
+            background: #F8FAFC;
+            min-height: 100vh;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+        }
+
+        .register-container {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 10px 25px -5px rgba(0,0,0,0.1);
+            max-width: 500px;
+            width: 100%;
+            padding: 40px;
+            animation: slideUp 0.4s ease;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        .register-logo {
+            text-align: center;
+            margin-bottom: 30px;
+        }
+
+        .register-logo h1 {
+            font-size: 2rem;
+            color: #3B82F6;
+            margin-bottom: 8px;
+            font-weight: 700;
+        }
+
+        .register-logo p {
+            color: #6B7280;
+            font-size: 0.9rem;
+        }
+
+        .register-form-group {
+            margin-bottom: 20px;
+        }
+
+        .register-form-group label {
+            display: block;
+            margin-bottom: 8px;
+            color: #1F2937;
+            font-weight: 600;
+            font-size: 0.95rem;
+        }
+
+        .register-input-wrapper {
+            position: relative;
+            display: flex;
+            gap: 8px;
+        }
+
+        .register-form-input {
+            width: 100%;
+            padding: 12px 16px;
+            border: 2px solid #E5E7EB;
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s ease;
+            font-family: inherit;
+        }
+
+        .register-form-input:focus {
+            outline: none;
+            border-color: #3B82F6;
+            box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+        }
+
+        .register-verify-button {
+            padding: 12px 20px;
+            background: #3B82F6;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            white-space: nowrap;
+            font-size: 0.9rem;
+        }
+
+        .register-verify-button:hover {
+            background: #2563EB;
+            transform: translateY(-2px);
+        }
+
+        .register-verify-button:disabled {
+            background: #9CA3AF;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .register-code-section {
+            display: none;
+            animation: fadeIn 0.3s ease;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+
+        .register-code-input {
+            text-align: center;
+            font-size: 1.5rem;
+            letter-spacing: 0.5rem;
+            font-weight: 600;
+        }
+
+        .register-verified-badge {
+            display: none;
+            align-items: center;
+            gap: 8px;
+            padding: 12px 16px;
+            background: #D1FAE5;
+            color: #065F46;
+            border-radius: 12px;
+            font-size: 0.9rem;
+            font-weight: 600;
+            margin-top: 12px;
+        }
+
+        .register-submit-button {
+            width: 100%;
+            padding: 14px;
+            background: #3B82F6;
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            margin-top: 10px;
+        }
+
+        .register-submit-button:hover {
+            background: #2563EB;
+            transform: translateY(-2px);
+            box-shadow: 0 10px 20px rgba(59, 130, 246, 0.3);
+        }
+
+        .register-submit-button:disabled {
+            background: #9CA3AF;
+            cursor: not-allowed;
+            transform: none;
+        }
+
+        .register-login-link {
+            text-align: center;
+            margin-top: 20px;
+            color: #6B7280;
+        }
+
+        .register-login-link a {
+            color: #3B82F6;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        .register-login-link a:hover {
+            text-decoration: underline;
+        }
+
+        .register-error-message {
+            color: #DC2626;
+            font-size: 0.875rem;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .register-success-message {
+            color: #059669;
+            font-size: 0.875rem;
+            margin-top: 4px;
+            display: none;
+        }
+
+        .register-helper-text {
+            font-size: 0.875rem;
+            color: #6B7280;
+            margin-top: 4px;
+        }
+
+        @media (max-width: 768px) {
+            .register-container {
+                padding: 30px 24px;
+            }
+
+            .register-logo h1 {
+                font-size: 1.75rem;
+            }
+        }
+    </style>
+</head>
+<body class="register-page">
+    <div class="register-container">
+        <div class="register-logo">
+            <h1>Tupick</h1>
+            <p>조각투자 AI 분석 플랫폼</p>
+        </div>
+
+        <form id="registerForm">
+            <!-- 이름 -->
+            <div class="register-form-group">
+                <label for="name">이름</label>
+                <input type="text" id="name" class="register-form-input" required placeholder="홍길동">
+            </div>
+
+            <!-- 이메일 + 인증 -->
+            <div class="register-form-group">
+                <label for="email">이메일</label>
+                <div class="register-input-wrapper">
+                    <input type="email" id="email" class="register-form-input" required placeholder="example@email.com">
+                    <button type="button" class="register-verify-button" onclick="sendVerificationCode()">
+                        인증코드 발송
+                    </button>
+                </div>
+                <div class="register-error-message" id="emailError"></div>
+                <div class="register-success-message" id="emailSuccess"></div>
+            </div>
+
+            <!-- 인증 코드 입력 -->
+            <div class="register-form-group register-code-section" id="codeSection">
+                <label for="code">인증 코드 (4자리)</label>
+                <input type="text" id="code" class="register-form-input register-code-input" 
+                       placeholder="0000" maxlength="4" pattern="[0-9]{4}">
+                <div class="register-helper-text">이메일로 발송된 4자리 코드를 입력하세요</div>
+                <button type="button" class="register-verify-button" style="width: 100%; margin-top: 8px;" 
+                        onclick="verifyCode()">
+                    인증 확인
+                </button>
+                <div class="register-error-message" id="codeError"></div>
+            </div>
+
+            <!-- 인증 완료 뱃지 -->
+            <div class="register-verified-badge" id="verifiedBadge">
+                <span>✅</span>
+                <span>이메일 인증 완료</span>
+            </div>
+
+            <!-- 비밀번호 -->
+            <div class="register-form-group">
+                <label for="password">비밀번호</label>
+                <input type="password" id="password" class="register-form-input" required 
+                       placeholder="8-20자, 대소문자/숫자/특수문자 중 2가지 이상"
+                       maxlength="20">
+                <div class="register-helper-text">8-20자, 대문자/소문자/숫자/특수문자 중 2가지 이상 포함</div>
+            </div>
+
+            <!-- 비밀번호 확인 -->
+            <div class="register-form-group">
+                <label for="passwordConfirm">비밀번호 확인</label>
+                <input type="password" id="passwordConfirm" class="register-form-input" required>
+                <div class="register-error-message" id="passwordError"></div>
+            </div>
+
+            <button type="submit" class="register-submit-button" id="submitButton" disabled>
+                회원가입
+            </button>
+        </form>
+
+        <div class="register-login-link">
+            이미 계정이 있으신가요? <a href="login.html">로그인</a>
+        </div>
+    </div>
+
+    <script>
+        let emailVerified = false;
+        let verificationSent = false;
+
+        async function sendVerificationCode() {
+            const email = document.getElementById('email').value;
+            const emailError = document.getElementById('emailError');
+            const emailSuccess = document.getElementById('emailSuccess');
+            const verifyBtn = event.target;
+
+            if (!email) {
+                showError(emailError, '이메일을 입력해주세요');
+                return;
+            }
+
+            const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+            if (!emailRegex.test(email)) {
+                showError(emailError, '올바른 이메일 형식이 아닙니다');
+                return;
+            }
+
+            verifyBtn.disabled = true;
+            verifyBtn.textContent = '발송 중...';
+
+            try {
+                const response = await fetch('/auth/send-verification', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ "email": email })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    emailError.style.display = 'none';
+                    showSuccess(emailSuccess, data.message);
+                    
+                    document.getElementById('codeSection').style.display = 'block';
+                    verificationSent = true;
+
+                    if (data.dev_mode && data.code) {
+                        alert(`📧 개발 모드 인증 코드: ${data.code}`);
+                    }
+
+                    verifyBtn.textContent = '재발송';
+                } else {
+                    showError(emailError, data.detail || '오류가 발생했습니다');
+                    verifyBtn.textContent = '인증코드 발송';
+                }
+            } catch (error) {
+                showError(emailError, '서버 오류가 발생했습니다');
+                verifyBtn.textContent = '인증코드 발송';
+            } finally {
+                verifyBtn.disabled = false;
+            }
+        }
+
+        async function verifyCode() {
+            const email = document.getElementById('email').value;
+            const code = document.getElementById('code').value;
+            const codeError = document.getElementById('codeError');
+
+            if (!code || code.length !== 4) {
+                showError(codeError, '4자리 인증 코드를 입력해주세요');
+                return;
+            }
+
+            try {
+                const response = await fetch('/auth/verify-code', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ "email": email, "code": code })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    codeError.style.display = 'none';
+                    
+                    document.getElementById('codeSection').style.display = 'none';
+                    document.getElementById('verifiedBadge').style.display = 'flex';
+                    
+                    emailVerified = true;
+                    checkFormValid();
+                    
+                    alert('✅ ' + data.message);
+                } else {
+                    showError(codeError, data.detail || '인증에 실패했습니다');
+                }
+            } catch (error) {
+                showError(codeError, '서버 오류가 발생했습니다');
+            }
+        }
+
+        function showError(element, message) {
+            element.textContent = message;
+            element.style.display = 'block';
+        }
+
+        function showSuccess(element, message) {
+            element.textContent = message;
+            element.style.display = 'block';
+        }
+
+        function checkFormValid() {
+            const submitBtn = document.getElementById('submitButton');
+            const password = document.getElementById('password').value;
+            const passwordConfirm = document.getElementById('passwordConfirm').value;
+            
+            // 비밀번호 길이 체크
+            if (password.length < 8 || password.length > 20) {
+                submitBtn.disabled = true;
+                return;
+            }
+            
+            submitBtn.disabled = !(
+                emailVerified && 
+                password.length >= 8 &&
+                password.length <= 20 &&
+                password === passwordConfirm
+            );
+        }
+
+        document.getElementById('passwordConfirm').addEventListener('input', function() {
+            const password = document.getElementById('password').value;
+            const passwordConfirm = this.value;
+            const passwordError = document.getElementById('passwordError');
+
+            if (passwordConfirm && password !== passwordConfirm) {
+                showError(passwordError, '비밀번호가 일치하지 않습니다');
+            } else {
+                passwordError.style.display = 'none';
+            }
+            
+            checkFormValid();
+        });
+
+        document.getElementById('password').addEventListener('input', checkFormValid);
+
+        document.getElementById('registerForm').addEventListener('submit', async function(e) {
+            e.preventDefault();
+
+            if (!emailVerified) {
+                alert('이메일 인증을 먼저 완료해주세요');
+                return;
+            }
+
+            const name = document.getElementById('name').value;
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const passwordConfirm = document.getElementById('passwordConfirm').value;
+
+            if (password !== passwordConfirm) {
+                alert('비밀번호가 일치하지 않습니다');
+                return;
+            }
+
+            const submitBtn = document.getElementById('submitButton');
+            submitBtn.disabled = true;
+            submitBtn.textContent = '가입 중...';
+
+            try {
+                const response = await fetch('/auth/register', {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({
+                        email: email,
+                        password: password,
+                        name: name
+                    })
+                });
+
+                const data = await response.json();
+
+                if (response.ok) {
+                    localStorage.setItem('access_token', data.access_token);
+                    localStorage.setItem('user', JSON.stringify(data.user));
+                    
+                    alert('✅ 회원가입이 완료되었습니다!\n프로필 설정 페이지로 이동합니다.');
+                    window.location.href = '/profile.html';
+                } else {
+                    alert('❌ ' + (data.detail || '회원가입에 실패했습니다'));
+                }
+            } catch (error) {
+                alert('❌ 서버 오류가 발생했습니다');
+            } finally {
+                submitBtn.disabled = false;
+                submitBtn.textContent = '회원가입';
+            }
+        });
+    </script>
+</body>
+</html>
